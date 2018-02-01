@@ -1,5 +1,5 @@
-# multitaskLife
-From basic todo apps to GTD mantra focused beasts we weren't pleased with the current options. They all seemed to miss out on some feature or another and there wasn't an option that checked all the boxes. So we set out to create multitaskLife.
+# multitask.life
+From basic todo apps to GTD mantra focused beasts we weren't pleased with the current options. They all seemed to miss out on some feature or another and there wasn't an option that checked all the boxes. So we set out to create multitask.life.
 ## Current Features
 * None. We just started development!
 ## Planned Features
