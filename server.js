@@ -2,7 +2,7 @@
 var graphql = require ('graphql').graphql  
 var express = require('express')  
 var graphQLHTTP = require('express-graphql')  
-var Schema = require('./schema')  
+var Schema = require('./server/schema')  
 
 // This is just an internal test
 var query = 'query { todos { due, title, completed } }'  
