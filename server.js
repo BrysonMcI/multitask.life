@@ -1,18 +1,11 @@
 //server.js
-var graphql = require ('graphql').graphql  
-var express = require('express')  
-var graphQLHTTP = require('express-graphql')  
-var Schema = require('./server/schema')  
+var express = require('./config/express'),
+    mongoose = require('./config/mongoose');
 
-// This is just an internal test
-var query = 'query { todos { due, title, completed } }'  
-graphql(Schema, query).then( function(result) {  
-  console.log(JSON.stringify(result,null," "));
+var db = mongoose();
+var app = express(db);
 
-});
+app.listen(8080);
 
-var app = express()  
-  .use('/', graphQLHTTP({ schema: Schema, pretty: true }))
-  .listen(8080, function (err) {
-    console.log('GraphQL Server is now running on localhost:8080');
-  });
+module.exports = app;
+console.log('Server running on 8080');
