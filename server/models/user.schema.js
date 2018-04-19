@@ -1,22 +1,45 @@
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
-    // task = mongoose.model('task')
+    composeWithMongoose = require('graphql-compose-mongoose').composeWithMongoose,
+    schemaComposer = require('graphql-compose').schemaComposer;
 
-const UserSchema = new Schema({
-    name: String,
+// STEP 1: DEFINE MONGOOSE SCHEMA AND MODEL
+const UserSchema = new mongoose.Schema({
+    name: String, // standard types
     email: {
         type: String,
+        index: true,
         unique: true,
-    //    match: /\w+@\w+\.\w+/
     },
-    task_roots: [Schema.Types.ObjectId],
-    teams: [Schema.Types.ObjectId]
-})
+    teams: [mongoose.Schema.Types.ObjectId],
+});
+const UserModel = mongoose.model('User', UserSchema);
 
-// UserSchema.methods.someMethod = function(document, callback)
+// STEP 2: CONVERT MONGOOSE MODEL TO GraphQL PIECES
+const customizationOptions = {}; // left it empty for simplicity, described below
+const UserTC = composeWithMongoose(UserModel, customizationOptions);
 
-UserSchema.post('save', function(next) {
-// do something on save
+// STEP 3: CREATE CRAZY GraphQL SCHEMA WITH ALL CRUD USER OPERATIONS
+// via graphql-compose it will be much much easier, with less typing
+schemaComposer.rootQuery().addFields({
+userById: UserTC.getResolver('findById'),
+userByIds: UserTC.getResolver('findByIds'),
+userOne: UserTC.getResolver('findOne'),
+userMany: UserTC.getResolver('findMany'),
+userCount: UserTC.getResolver('count'),
+userConnection: UserTC.getResolver('connection'),
+userPagination: UserTC.getResolver('pagination'),
 });
 
-mongoose.model('User', UserSchema);
+schemaComposer.rootMutation().addFields({
+userCreate: UserTC.getResolver('createOne'),
+userUpdateById: UserTC.getResolver('updateById'),
+userUpdateOne: UserTC.getResolver('updateOne'),
+userUpdateMany: UserTC.getResolver('updateMany'),
+userRemoveById: UserTC.getResolver('removeById'),
+userRemoveOne: UserTC.getResolver('removeOne'),
+userRemoveMany: UserTC.getResolver('removeMany'),
+});
+
+const graphqlSchema = schemaComposer.buildSchema();
+
+module.exports = graphqlSchema;

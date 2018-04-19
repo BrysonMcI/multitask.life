@@ -6,6 +6,10 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
+    "express-graphql": "^0.6.12",
+    "graphql": "^0.13.2",
+    "graphql-compose": "^4.0.0",
+    "graphql-compose-mongoose": "^4.0.0",
     "mongoose": "^5.0.2",
     "morgan": "^1.9.0"
   },

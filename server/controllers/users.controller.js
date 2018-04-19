@@ -1,7 +1,12 @@
 var User = require('mongoose').model('User');
+var Team = require('mongoose').model('Team');
 
-exports.createUser = function(req, res, next) {
-    res.json({
-        created: 'true'
-    });
+export function createUser(req, res, next) {
+    let name = req.body.name, email = req.body.email;
+    if (name === undefined || email === undefined) {
+        return res.status(400).json({
+            error: 'true',
+            reason: 'missing required parameters'
+        });
+    }
 }
