@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"target": "es5",	// can't use es6 yet because modules
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"lib": ["es2015"],
+		"outDir": "dist"
+	},
+	"include": [
+		"src/**/*.ts"
+	],
+	"exclude": [
+		"node_modules"
+	]
+}
