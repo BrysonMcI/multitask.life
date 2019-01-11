@@ -1,10 +1,9 @@
 import {Request, Response} from "express";
 import {TaskController} from "./controller";
 
-
 export class Routes {
     taskController: TaskController = new TaskController();
-    public routes(app): void {
+    public routes(app: any): void { // fix typing later
         app.route('/')
             .get((req: Request, res: Response) => {
                 res.status(200).send({

@@ -1,14 +1,21 @@
 import * as mongoose from "mongoose";
-import {TaskModel} from "./models";
+import {Task, BasicTask, ListTask} from "./models";
 import {Request, Response} from "express";
 
 // make sure this goes somewhere smart
 mongoose.connect('mongodb://localhost:27017/mtl');
-const Task = mongoose.model('Task', TaskModel);
 
 export class TaskController {
     public async createTask(req: Request, res: Response) {
-        let newTask = new Task(req.body);
+        let newTask;
+        console.log(req.body);  // leave debug for now
+        if (Array.isArray(req.body.content)) {
+            newTask = new ListTask(req.body);
+        } else if (req.body.content) {
+            newTask = new BasicTask(req.body);
+        } else {
+            newTask = new Task(req.body);
+        }
         let st = 202;
         try {
             await newTask.save();

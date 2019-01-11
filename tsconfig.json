@@ -1,8 +1,7 @@
 {
 	"compilerOptions": {
 		"target": "es5",	// can't use es6 yet because modules
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true,
+		"strict": true,
 		"lib": ["es2015"],
 		"outDir": "dist"
 	},
