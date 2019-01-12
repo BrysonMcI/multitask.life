@@ -1,20 +1,17 @@
-import * as mongoose from "mongoose";
-import {Task, BasicTask, ListTask} from "./models";
+import "./model/db";
+import {ITask, Task, BasicTask, ListTask} from "./model/Task";
 import {Request, Response} from "express";
-
-// make sure this goes somewhere smart
-mongoose.connect('mongodb://localhost:27017/mtl');
 
 export class TaskController {
     public async createTask(req: Request, res: Response) {
-        let newTask;
+        let newTask: ITask;
         console.log(req.body);  // leave debug for now
         if (Array.isArray(req.body.content)) {
-            newTask = new ListTask(req.body);
+            newTask = createListTask(req.body);
         } else if (req.body.content) {
-            newTask = new BasicTask(req.body);
+            newTask = createBasicTask(req.body);
         } else {
-            newTask = new Task(req.body);
+            return res.status(400).json({"reason": "no content"});
         }
         let st = 202;
         try {
@@ -29,7 +26,7 @@ export class TaskController {
     }
     public async getTask(req: Request, res: Response) {
         try {
-            let task = await Task.find({});
+            let task: ITask[] = await Task.find({});
             res.status(200).json(task);
         } catch (err) {
             console.error('could not find task');
@@ -45,4 +42,12 @@ export class TaskController {
             res.status(400).send();
         }
     }
+}
+
+function createListTask(data: any): ITask {
+    return new ListTask(data);
+}
+
+function createBasicTask(data: any): ITask {
+    return new BasicTask(data);
 }

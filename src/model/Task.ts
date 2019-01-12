@@ -31,8 +31,14 @@ const BasicTaskModel = new Schema({
     content: String
 });
 
+const ImageTaskModel = new Schema({
+    content: String     // just using a file path for now?
+})
+
 export const Task: Model<ITask> = model<ITask>("Task", TaskModel);
 
 export const BasicTask: Model<ITask> = Task.discriminator<ITask>("BasicTask", BasicTaskModel);
 
 export const ListTask: Model<ITask> = Task.discriminator<ITask>("ListTask", ListTaskModel);
+
+export const ImageTask: Model<ITask> = Task.discriminator<ITask>("ImageTask", ImageTaskModel);
