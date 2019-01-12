@@ -13,6 +13,7 @@ export class Routes {
         app.route('/task')
         .get(this.taskController.getTask)
         .post(this.taskController.createTask)
+        .put(this.taskController.updateTask)
         .delete(this.taskController.deleteTask);
     }
 }

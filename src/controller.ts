@@ -13,15 +13,29 @@ export class TaskController {
         } else {
             return res.status(400).json({"reason": "no content"});
         }
-        let st = 202;
         try {
-            await newTask.save();
+            let rs = await newTask.save();
+            res.status(201).json(rs);
         } catch (err){
             console.error(err);
             console.error('error saving new task');
-            st = 400;
-        } finally {
-            res.status(st).send();
+            res.status(400).json(err);
+        }
+    }
+    public async updateTask(req: Request, res: Response) {
+        if (!req.body.query || !req.body.task) {
+            return res.status(400).json({
+                "reason": "missing parameters"
+            });
+        }
+        try {
+            // right now this works but will require some duplicate data, like if
+            // tags are being updated we need to send all tags, not just new
+            let t: ITask = await Task.updateOne(req.body.query, req.body.task);
+            res.status(200).json(t);
+        } catch (err) {
+            console.log(err)
+            res.status(500).json(err);  // eventually remove the error dumping
         }
     }
     public async getTask(req: Request, res: Response) {
@@ -34,9 +48,14 @@ export class TaskController {
         }
     }
     public async deleteTask(req: Request, res: Response) {
+        if (!req.body.query) {
+            return res.status(400).json({
+                "reason": "missing parameter"
+            });
+        }
         try {
-            await Task.deleteOne({title: 'test 1'});
-            res.status(202).send();
+            let del: ITask = await Task.deleteOne(req.body.query);
+            res.status(202).json(del);
         } catch (err){
             console.error('could not delete one', err);
             res.status(400).send();
@@ -44,6 +63,7 @@ export class TaskController {
     }
 }
 
+// helper creation functions
 function createListTask(data: any): ITask {
     return new ListTask(data);
 }

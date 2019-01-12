@@ -4,6 +4,7 @@ export interface ITask extends Document {
     title: string;
     created: Date;
     tags: string[];
+    timeline: any;      // may be a better type to use
     content: any;
 }
 
@@ -20,6 +21,17 @@ export const TaskModel = new Schema({
     tags: {
         type: [String],
     },
+    timeline: {
+        start: {
+            type: Date
+        },
+        end: {
+            type: Date
+        }
+    },
+    content: {
+        type: String
+    }
 });
 
 // and here we define the types of tasks and how they define what content is
