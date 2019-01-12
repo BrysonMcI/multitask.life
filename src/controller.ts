@@ -5,7 +5,6 @@ import {Request, Response} from "express";
 export class TaskController {
     public async createTask(req: Request, res: Response) {
         let newTask: ITask;
-        console.log(req.body);  // leave debug for now
         if (Array.isArray(req.body.content)) {
             newTask = createListTask(req.body);
         } else if (req.body.content) {
@@ -41,12 +40,18 @@ export class TaskController {
         }
     }
     public async getTask(req: Request, res: Response) {
+        let query = {};
+        if (req.query.tags) {
+            query = {
+                tags: req.query.tags
+            };
+        }
         try {
-            let task: ITask[] = await Task.find({});
+            let task: ITask[] = await Task.find(query).populate('children'); // flag for populating?
             res.status(200).json(task);
         } catch (err) {
             console.error('could not find task');
-            res.status(404).send();
+            res.status(404).json({"reason": "could not find tasks"});
         }
     }
     public async deleteTask(req: Request, res: Response) {
@@ -62,6 +67,26 @@ export class TaskController {
             console.error('could not delete one', err);
             res.status(400).send();
         }
+    }
+    public async addChildTask(req: Request, res: Response) {
+        // validation
+        let parent = await Task.findOne({_id: req.body.parent});    // can optimize this
+        let children = await Task.find().where('_id').in(req.body.children);
+        if (parent && children) {
+            let childIDs = children.map((child) => child._id);
+            // add any new children, then remove duplicates
+            parent.children = parent.children.concat(childIDs);
+            parent.children = parent.children.filter((x, i, a)=>a.indexOf(x)==i);    // maybe guard adding self as child?
+            try {
+                parent.markModified('children');
+                await parent.save();
+            } catch (err) {
+                console.log(parent);
+                console.log(err);
+            }
+            //console.log('done', parent.children);
+        }
+        res.status(200).json(parent);
     }
 }
 

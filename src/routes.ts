@@ -15,5 +15,8 @@ export class Routes {
         .post(this.taskController.createTask)
         .put(this.taskController.updateTask)
         .delete(this.taskController.deleteTask);
+
+        app.route('/task/join')
+        .post(this.taskController.addChildTask);
     }
 }

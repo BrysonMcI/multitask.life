@@ -3,9 +3,10 @@ import {Schema, Document, Model, model} from "mongoose";
 export interface ITask extends Document {
     title: string;
     created: Date;
-    tags: string[];
-    timeline: any;      // may be a better type to use
+    tags?: string[];
+    timeline?: any;      // may be a better type to use
     content: any;
+    children: number[];
 }
 
 // this task model is essentially abstract
@@ -31,6 +32,13 @@ export const TaskModel = new Schema({
     },
     content: {
         type: String
+    },
+    children: {
+        type: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Task'
+        }],
+        default: []
     }
 });
 
@@ -46,7 +54,7 @@ const BasicTaskModel = new Schema({
 const ImageTaskModel = new Schema({
     // https://www.npmjs.com/package/multer
     content: String     // just using a file path for now?
-})
+});
 
 export const Task: Model<ITask> = model<ITask>("Task", TaskModel);
 
