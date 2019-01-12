@@ -44,6 +44,7 @@ const BasicTaskModel = new Schema({
 });
 
 const ImageTaskModel = new Schema({
+    // https://www.npmjs.com/package/multer
     content: String     // just using a file path for now?
 })
 

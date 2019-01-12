@@ -23,7 +23,7 @@ export class TaskController {
         }
     }
     public async updateTask(req: Request, res: Response) {
-        if (!req.body.query || !req.body.task) {
+        if (!req.body.id || !req.body.task) {
             return res.status(400).json({
                 "reason": "missing parameters"
             });
@@ -31,7 +31,9 @@ export class TaskController {
         try {
             // right now this works but will require some duplicate data, like if
             // tags are being updated we need to send all tags, not just new
-            let t: ITask = await Task.updateOne(req.body.query, req.body.task);
+            // also of note: it looks like this will massage a different content
+            // back to the original task type's desired content
+            let t: ITask = await Task.updateOne({_id: req.body.id}, req.body.task);
             res.status(200).json(t);
         } catch (err) {
             console.log(err)
@@ -48,13 +50,13 @@ export class TaskController {
         }
     }
     public async deleteTask(req: Request, res: Response) {
-        if (!req.body.query) {
+        if (!req.body.id) {
             return res.status(400).json({
                 "reason": "missing parameter"
             });
         }
         try {
-            let del: ITask = await Task.deleteOne(req.body.query);
+            let del: ITask = await Task.deleteOne({_id: req.body.id});
             res.status(202).json(del);
         } catch (err){
             console.error('could not delete one', err);
